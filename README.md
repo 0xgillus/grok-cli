@@ -17,12 +17,12 @@ A powerful command-line interface for xAI's Grok models, providing developers wi
 
 ### Option 1: One-line Install (Recommended)
 ```bash
-git clone https://github.com/your-username/grok-cli && cd grok-cli && ./install.sh
+git clone https://github.com/0xgillus/grok-cli && cd grok-cli && ./install.sh
 ```
 
 ### Option 2: Manual Installation
 ```bash
-git clone https://github.com/your-username/grok-cli
+git clone https://github.com/0xgillus/grok-cli
 cd grok-cli
 npm install
 npm run build
@@ -322,6 +322,6 @@ See [CHANGELOG.md](CHANGELOG.md) for version history.
 
 ## Support
 
-- 📖 [Documentation](https://github.com/your-org/grok-cli/docs)
-- 🐛 [Issue Tracker](https://github.com/your-org/grok-cli/issues)
-- 💬 [Discussions](https://github.com/your-org/grok-cli/discussions)
+- 📖 [Documentation](https://github.com/0xgillus/grok-cli/docs)
+- 🐛 [Issue Tracker](https://github.com/0xgillus/grok-cli/issues)
+- 💬 [Discussions](https://github.com/0xgillus/grok-cli/discussions)
