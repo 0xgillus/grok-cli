@@ -5,6 +5,7 @@ import { ConfigManager, logger } from '@grok-cli/shared';
 import { chatCommand } from '../commands/chat';
 import { configCommand } from '../commands/config';
 import { analyzeCommand } from '../commands/analyze';
+import { createCommand } from '../commands/create';
 import { InteractiveChat } from '../ui/interactive';
 
 const program = new Command();
@@ -33,6 +34,17 @@ async function main() {
 
     program
       .addCommand(configCommand);
+
+    program
+      .command('create')
+      .description('Create a new project from scratch')
+      .argument('[name]', 'Project name')
+      .option('-t, --type <type>', 'Project type (web-app, api, cli, library, mobile, desktop, game, custom)')
+      .option('-f, --framework <framework>', 'Framework to use')
+      .option('-l, --language <language>', 'Programming language')
+      .option('-d, --description <description>', 'Project description')
+      .option('-m, --model <model>', 'Model to use for generation (will prompt if not specified)')
+      .action(createCommand);
 
     program
       .command('analyze')

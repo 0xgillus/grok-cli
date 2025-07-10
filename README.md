@@ -6,6 +6,8 @@ A powerful command-line interface for xAI's Grok models, providing developers wi
 
 - **Beautiful Interface**: Clean terminal UI with intuitive design
 - **Interactive Chat**: Start conversations with Grok directly from your terminal
+- **In-Chat Project Creation**: Create new projects by simply saying "create a React app" or "build me a Python CLI tool"
+- **Project Scaffolding**: Generate complete project structures with AI assistance
 - **Code Analysis**: Analyze entire codebases and get architectural insights
 - **Smart Setup**: Automatic first-time setup with API key configuration
 - **Multiple Models**: Support for all available Grok models
@@ -93,6 +95,24 @@ grok "Explain this function"
 grok "Write a Python function" --model grok-2 --stream
 ```
 
+### Project Creation
+```bash
+# Command-line project creation
+grok create
+
+# Interactive project setup
+grok create my-awesome-app
+
+# Specific project type
+grok create my-api --type api --framework express
+
+# In-chat creation (while in interactive mode)
+# Just say things like:
+# "Create a React todo app"
+# "Build me a Python CLI tool"
+# "Make an Express API server"
+```
+
 ### Configuration
 ```bash
 # Set API key
@@ -158,9 +178,41 @@ $ grok
 Starting interactive chat session. Type "exit" to quit, "clear" to clear history.
 You: What is the difference between TypeScript and JavaScript?
 Grok: TypeScript is a superset of JavaScript that adds static type checking...
+
+You: Create a React todo app
+🎯 Project creation detected!
+? Create a web-app project called "todo-app"? Yes
+🚀 Generating project structure...
+✅ Project created successfully!
+
 You: exit
 Goodbye!
 ```
+
+### Project Creation Examples
+```bash
+# Command-line creation
+$ grok create
+? Project name: my-awesome-project
+? Project type: Web Application
+? Framework: React
+? Language: TypeScript
+🚀 Generating project structure...
+✅ Project created successfully!
+
+# Quick creation with parameters
+$ grok create my-api --type api --framework express --language typescript
+🚀 Generating project structure...
+✅ Project created successfully!
+```
+
+### In-Chat Project Creation Examples
+While in interactive chat mode, you can naturally ask for projects:
+- **"Create a React todo app"** → Generates a React TypeScript todo application
+- **"Build me a Python CLI tool"** → Creates a Python command-line interface
+- **"Make an Express API server"** → Scaffolds an Express.js REST API
+- **"Generate a Vue.js dashboard"** → Creates a Vue.js admin dashboard
+- **"Create a mobile app with React Native"** → Sets up a React Native project
 
 ### Code Analysis
 ```bash

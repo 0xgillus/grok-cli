@@ -191,10 +191,23 @@ export class InteractiveChat {
     console.log(chalk.gray('   /history  ') + chalk.white('- Show conversation history'));
     console.log(chalk.gray('   /quit     ') + chalk.white('- Exit the chat'));
     console.log();
+    console.log(chalk.cyan('🎯 Smart Project Creation:'));
+    console.log(chalk.white('Just describe what you want to build naturally!'));
+    console.log();
+    console.log(chalk.yellow('Examples:'));
+    console.log(chalk.gray('   • ') + chalk.green('"Create a React todo app"'));
+    console.log(chalk.gray('   • ') + chalk.green('"Build me a Python CLI tool"'));
+    console.log(chalk.gray('   • ') + chalk.green('"Make an Express API server"'));
+    console.log(chalk.gray('   • ') + chalk.green('"Generate a Vue.js dashboard"'));
+    console.log(chalk.gray('   • ') + chalk.green('"Create a mobile app with React Native"'));
+    console.log(chalk.gray('   • ') + chalk.green('"Build a FastAPI backend"'));
+    console.log(chalk.gray('   • ') + chalk.green('"Make a Next.js blog website"'));
+    console.log();
     console.log(chalk.cyan('Tips:'));
     console.log(chalk.gray('   • ') + chalk.white('Ask questions about coding, debugging, or any topic'));
     console.log(chalk.gray('   • ') + chalk.white('Include code snippets for analysis'));
     console.log(chalk.gray('   • ') + chalk.white('Be specific for better responses'));
+    console.log(chalk.gray('   • ') + chalk.white('Project creation works in any conversation'));
     console.log();
   }
 
@@ -222,6 +235,12 @@ export class InteractiveChat {
   }
 
   private async processUserMessage(input: string): Promise<void> {
+    // Check if this is a project creation request
+    if (this.isProjectCreationRequest(input)) {
+      await this.handleProjectCreation(input);
+      return;
+    }
+
     // Add user message to history
     this.messages.push({ role: 'user', content: input });
 
@@ -370,5 +389,238 @@ export class InteractiveChat {
     }
     
     return formattedLines.join('\n');
+  }
+
+  private isProjectCreationRequest(input: string): boolean {
+    const lowerInput = input.toLowerCase();
+    
+    // Keywords that indicate project creation
+    const creationKeywords = [
+      'create', 'build', 'make', 'generate', 'scaffold', 'setup', 'start',
+      'new project', 'new app', 'new api', 'new cli', 'new website',
+      'bootstrap', 'initialize', 'init', 'develop', 'craft'
+    ];
+    
+    // Project type keywords
+    const projectTypes = [
+      'react app', 'vue app', 'svelte app', 'angular app', 'web app', 'website', 'frontend',
+      'api', 'rest api', 'graphql api', 'backend', 'server', 'microservice',
+      'cli tool', 'command line', 'terminal app', 'script',
+      'mobile app', 'react native', 'flutter app', 'ios app', 'android app',
+      'desktop app', 'electron app', 'tauri app',
+      'game', 'python script', 'node app', 'express app', 'fastapi',
+      'typescript project', 'javascript project', 'next.js', 'nuxt.js',
+      'django app', 'flask app', 'laravel app', 'rails app',
+      'discord bot', 'telegram bot', 'chatbot', 'bot',
+      'library', 'package', 'npm package', 'component library',
+      'dashboard', 'admin panel', 'cms', 'blog', 'portfolio',
+      'todo app', 'calculator', 'weather app', 'chat app'
+    ];
+    
+    // Check if input contains creation intent + project type
+    const hasCreationIntent = creationKeywords.some(keyword => lowerInput.includes(keyword));
+    const hasProjectType = projectTypes.some(type => lowerInput.includes(type));
+    
+    // Also check for direct project creation patterns
+    const directPatterns = [
+      /\b(want|need)\s+(a|an)\s+.*(app|website|api|tool|project|bot)/,
+      /can you\s+(create|make|build|generate)/,
+      /please\s+(create|make|build|generate)/,
+      /i want to\s+(create|make|build)/,
+      /help me\s+(create|make|build)/
+    ];
+    
+    const hasDirectPattern = directPatterns.some(pattern => pattern.test(lowerInput));
+    
+    return (hasCreationIntent && hasProjectType) || hasDirectPattern;
+  }
+
+  private async handleProjectCreation(input: string): Promise<void> {
+    console.log();
+    console.log(chalk.cyan('🎯 Smart project creation detected!'));
+    console.log(chalk.gray('Analyzing your request with AI...'));
+    console.log();
+    
+    const spinner = ora(chalk.blue('Parsing project details...')).start();
+    
+    try {
+      // Parse the project details from the user's message
+      const projectDetails = await this.parseProjectRequest(input);
+      
+      spinner.stop();
+      
+      console.log(chalk.green('✅ Project details extracted:'));
+      console.log(chalk.gray('   Name: ') + chalk.white(projectDetails.name));
+      console.log(chalk.gray('   Type: ') + chalk.cyan(projectDetails.type));
+      if (projectDetails.framework) {
+        console.log(chalk.gray('   Framework: ') + chalk.yellow(projectDetails.framework));
+      }
+      console.log(chalk.gray('   Language: ') + chalk.magenta(projectDetails.language));
+      if (projectDetails.description) {
+        console.log(chalk.gray('   Description: ') + chalk.dim(projectDetails.description));
+      }
+      console.log();
+      
+      const { confirm } = await inquirer.prompt([
+        {
+          type: 'confirm',
+          name: 'confirm',
+          message: `Create this project?`,
+          default: true
+        }
+      ]);
+      
+      if (!confirm) {
+        console.log(chalk.yellow('Project creation cancelled.'));
+        console.log(chalk.gray('You can always try again or use: ') + chalk.cyan('grok create'));
+        return;
+      }
+      
+      console.log();
+      console.log(chalk.blue('🚀 Creating your project...'));
+      
+      // Import and use the create command
+      const { createCommand } = await import('../commands/create');
+      await createCommand(projectDetails.name, {
+        type: projectDetails.type,
+        framework: projectDetails.framework,
+        language: projectDetails.language,
+        description: projectDetails.description
+      });
+      
+      console.log();
+      console.log(chalk.green('🎉 Your project is ready! Continue chatting or type /quit to exit.'));
+      
+    } catch (error: any) {
+      spinner.stop();
+      console.log();
+      console.log(chalk.red('❌ Failed to create project: ') + error.message);
+      console.log();
+      console.log(chalk.yellow('💡 You can also try:'));
+      console.log(chalk.gray('   • ') + chalk.cyan('grok create') + chalk.gray(' for interactive creation'));
+      console.log(chalk.gray('   • ') + chalk.cyan('grok create --help') + chalk.gray(' for all options'));
+      console.log(chalk.gray('   • Rephrase your request and try again'));
+    }
+  }
+
+  private async parseProjectRequest(input: string): Promise<any> {
+    // Use Grok to parse the user's natural language request
+    const parsePrompt = `Parse this project creation request and extract the details. Be intelligent about inferring reasonable defaults.
+
+User request: "${input}"
+
+Extract and return ONLY a valid JSON object with these fields:
+{
+  "name": "suggested project name (kebab-case, descriptive)",
+  "type": "project type (web-app, api, cli, library, mobile, desktop, game, or custom)",
+  "framework": "suggested framework (if applicable, can be null)",
+  "language": "suggested programming language (javascript, typescript, python, etc.)",
+  "description": "brief description of what the user wants"
+}
+
+Guidelines:
+- Use descriptive names: "todo-app" not "my-project"
+- Choose appropriate types: web-app for React/Vue, api for Express/FastAPI, cli for command tools
+- Prefer TypeScript for modern web projects
+- Be smart about framework selection based on context
+- Keep descriptions concise but informative
+
+Examples:
+- "create a React todo app" → {"name": "todo-app", "type": "web-app", "framework": "react", "language": "typescript", "description": "Todo application with React"}
+- "build me a Python CLI tool for file management" → {"name": "file-manager-cli", "type": "cli", "framework": "click", "language": "python", "description": "Command line tool for file management"}
+- "make an Express API for a blog" → {"name": "blog-api", "type": "api", "framework": "express", "language": "typescript", "description": "REST API for blog application"}
+- "I want a Vue.js dashboard" → {"name": "admin-dashboard", "type": "web-app", "framework": "vue", "language": "typescript", "description": "Admin dashboard with Vue.js"}
+
+Return ONLY the JSON object, no other text:`;
+
+    const response = await this.client!.chat([
+      { role: 'user', content: parsePrompt }
+    ], { 
+      model: this.currentModel 
+    });
+    
+    try {
+      const content = response.choices[0].message.content;
+      
+      // Try to extract JSON from the response
+      const jsonMatch = content.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        const parsed = JSON.parse(jsonMatch[0]);
+        
+        // Validate and sanitize the parsed data
+        return {
+          name: this.sanitizeProjectName(parsed.name || 'my-project'),
+          type: this.validateProjectType(parsed.type || 'custom'),
+          framework: parsed.framework || null,
+          language: parsed.language || 'javascript',
+          description: parsed.description || input
+        };
+      }
+    } catch (error) {
+      // JSON parsing failed
+    }
+    
+    // Fallback: basic parsing with smarter defaults
+    const lowerInput = input.toLowerCase();
+    
+    let type = 'custom';
+    let framework = null;
+    let language = 'javascript';
+    let name = 'my-project';
+    
+    // Detect project type
+    if (lowerInput.includes('react') || lowerInput.includes('vue') || lowerInput.includes('web app') || lowerInput.includes('website')) {
+      type = 'web-app';
+      language = 'typescript';
+    } else if (lowerInput.includes('api') || lowerInput.includes('server') || lowerInput.includes('backend')) {
+      type = 'api';
+      language = 'typescript';
+    } else if (lowerInput.includes('cli') || lowerInput.includes('command line') || lowerInput.includes('terminal')) {
+      type = 'cli';
+    } else if (lowerInput.includes('mobile') || lowerInput.includes('react native')) {
+      type = 'mobile';
+      language = 'typescript';
+    }
+    
+    // Detect framework
+    if (lowerInput.includes('react')) framework = 'react';
+    else if (lowerInput.includes('vue')) framework = 'vue';
+    else if (lowerInput.includes('express')) framework = 'express';
+    else if (lowerInput.includes('fastapi')) framework = 'fastapi';
+    else if (lowerInput.includes('flask')) framework = 'flask';
+    
+    // Detect language
+    if (lowerInput.includes('python')) language = 'python';
+    else if (lowerInput.includes('typescript')) language = 'typescript';
+    else if (lowerInput.includes('javascript')) language = 'javascript';
+    
+    // Generate name from description
+    if (lowerInput.includes('todo')) name = 'todo-app';
+    else if (lowerInput.includes('blog')) name = 'blog-app';
+    else if (lowerInput.includes('dashboard')) name = 'dashboard';
+    else if (lowerInput.includes('api')) name = 'api-server';
+    else if (lowerInput.includes('cli')) name = 'cli-tool';
+    
+    return {
+      name,
+      type,
+      framework,
+      language,
+      description: input
+    };
+  }
+  
+  private sanitizeProjectName(name: string): string {
+    return name
+      .toLowerCase()
+      .replace(/[^a-z0-9-]/g, '-')
+      .replace(/-+/g, '-')
+      .replace(/^-|-$/g, '')
+      || 'my-project';
+  }
+  
+  private validateProjectType(type: string): string {
+    const validTypes = ['web-app', 'api', 'cli', 'library', 'mobile', 'desktop', 'game', 'custom'];
+    return validTypes.includes(type) ? type : 'custom';
   }
 }
