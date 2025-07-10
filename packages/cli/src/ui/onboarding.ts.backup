@@ -1,0 +1,157 @@
+import inquirer from 'inquirer';
+import chalk from 'chalk';
+import { ConfigManager, logger } from '@grok-cli/async function showWelcomeMessage() {
+  console.log(chalk.green('🎉 You\'re all set!'));
+  console.log();
+}';
+import { GrokAPIClient } from '@grok-cli/core';
+import { displayFirstTimeSetup } from './banner';
+
+export async function runFirstTimeSetup(): Promise<boolean> {
+  displayFirstTimeSetup();
+  
+  const { setupChoice } = await inquirer.prompt([
+    {
+      type: 'list',
+      name: 'setupChoice',
+      message: 'How would you like to proceed?',
+      choices: [
+        { name: '🔑 Set up my xAI API key (recommended)', value: 'api_key' },
+        { name: '⏭️  Skip setup for now', value: 'skip' }
+      ],
+      default: 'api_key',
+    },
+  ]);
+
+  switch (setupChoice) {
+    case 'api_key':
+      return await promptForApiKey();
+    case 'skip':
+      console.log();
+      console.log(chalk.yellow('⚠️  ') + 'You can set up your API key later with: ' + chalk.cyan('grok-cli config set-key'));
+      console.log(chalk.gray('   Or set the environment variable: ') + chalk.cyan('export GROK_API_KEY="your-key"'));
+      console.log();
+      return false;
+    default:
+      return false;
+  }
+}
+
+async function promptForApiKey(): Promise<boolean> {
+  console.log();
+  console.log(chalk.blue('🔑 API Key Setup'));
+  console.log(chalk.gray('─'.repeat(30)));
+  
+  const { apiKey } = await inquirer.prompt([
+    {
+      type: 'password',
+      name: 'apiKey',
+      message: 'Enter your xAI API key:',
+      mask: '●',
+      validate: (input: string) => {
+        if (!input || input.trim().length === 0) {
+          return 'API key cannot be empty';
+        }
+        if (input.length < 10) {
+          return 'API key seems too short. Please check and try again.';
+        }
+        return true;
+      },
+    },
+  ]);
+
+  // Test the API key
+  console.log();
+  console.log(chalk.blue('🔍 Testing API key...'));
+  
+  try {
+    const client = new GrokAPIClient({ apiKey: apiKey.trim() });
+    
+    // Try to get models to validate the key
+    await client.models();
+    
+    // If successful, save the key
+    const configManager = ConfigManager.getInstance();
+    await configManager.save({ apiKey: apiKey.trim() });
+    
+    console.log(chalk.green('✅ API key validated and saved successfully!'));
+    console.log();
+    
+    await showWelcomeMessage();
+    
+    return true;
+  } catch (error: any) {
+    console.log(chalk.red('❌ API key validation failed'));
+    
+    if (error.statusCode === 401) {
+      console.log(chalk.yellow('   Invalid API key. Please check your key and try again.'));
+    } else if (error.code === 'NETWORK_ERROR') {
+      console.log(chalk.yellow('   Network error. Please check your internet connection.'));
+    } else {
+      console.log(chalk.yellow(`   Error: ${error.message}`));
+    }
+    
+    console.log();
+    
+    const { retry } = await inquirer.prompt([
+      {
+        type: 'confirm',
+        name: 'retry',
+        message: 'Would you like to try entering the API key again?',
+        default: true,
+      },
+    ]);
+    
+    if (retry) {
+      return await promptForApiKey();
+    }
+    
+    return false;
+  }
+}
+
+async function showWelcomeMessage(isDemoMode = false) {
+  if (isDemoMode) {
+    console.log(chalk.green('� Welcome to Grok CLI Demo Mode!'));
+  } else {
+    console.log(chalk.green('�🎉 Welcome to Grok CLI!'));
+  }
+  console.log();
+  console.log(chalk.white('You\'re all set! Here are some things you can try:'));
+  console.log();
+  console.log(chalk.cyan('💬 Chat Commands:'));
+  console.log(chalk.gray('   • ') + chalk.white('Ask questions: ') + chalk.cyan('"What is TypeScript?"'));
+  console.log(chalk.gray('   • ') + chalk.white('Get code help: ') + chalk.cyan('"Explain this function"'));
+  console.log(chalk.gray('   • ') + chalk.white('Generate code: ') + chalk.cyan('"Write a React component"'));
+  console.log();
+  
+  if (!isDemoMode) {
+    console.log(chalk.cyan('📁 File Analysis:'));
+    console.log(chalk.gray('   • ') + chalk.white('Analyze project: ') + chalk.cyan('grok-cli analyze .'));
+    console.log(chalk.gray('   • ') + chalk.white('Review code: ') + chalk.cyan('grok-cli analyze ./src'));
+    console.log();
+  }
+  
+  console.log(chalk.cyan('⚙️  Configuration:'));
+  console.log(chalk.gray('   • ') + chalk.white('View settings: ') + chalk.cyan('grok-cli config show'));
+  if (!isDemoMode) {
+    console.log(chalk.gray('   • ') + chalk.white('Change model: ') + chalk.cyan('grok-cli config set-model grok-2'));
+  }
+  console.log();
+  console.log(chalk.cyan('❓ Need Help:'));
+  console.log(chalk.gray('   • ') + chalk.white('Show commands: ') + chalk.cyan('grok-cli --help'));
+  console.log(chalk.gray('   • ') + chalk.white('Type ') + chalk.cyan('/help') + chalk.white(' in interactive mode'));
+  console.log();
+  
+  if (isDemoMode) {
+    console.log(chalk.yellow('💡 Demo Mode Tips:'));
+    console.log(chalk.gray('   • Try asking about programming topics'));
+    console.log(chalk.gray('   • Responses are simulated examples'));
+    console.log(chalk.gray('   • Get a real API key at: ') + chalk.underline.blue('https://console.x.ai/'));
+    console.log();
+  }
+  
+  console.log(chalk.gray('─'.repeat(60)));
+  console.log(chalk.bold.white(isDemoMode ? 'Ready to explore demo mode! 🎮' : 'Ready to start chatting! 🚀'));
+  console.log();
+}

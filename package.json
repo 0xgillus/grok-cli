@@ -1,0 +1,49 @@
+{
+  "name": "grok-cli",
+  "version": "0.1.0",
+  "description": "Command-line interface for xAI's Grok models",
+  "keywords": [
+    "grok",
+    "xai",
+    "cli",
+    "ai",
+    "llm"
+  ],
+  "homepage": "https://github.com/your-username/grok-cli",
+  "bugs": {
+    "url": "https://github.com/your-username/grok-cli/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/your-username/grok-cli.git"
+  },
+  "license": "MIT",
+  "author": "Your Name <your.email@example.com>",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "./scripts/build.sh",
+    "dev": "npm run dev --workspaces",
+    "test": "npm run test --workspaces",
+    "lint": "eslint packages/*/src/**/*.ts",
+    "lint:fix": "eslint packages/*/src/**/*.ts --fix",
+    "clean": "npm run clean --workspaces",
+    "typecheck": "npm run typecheck --workspaces",
+    "publish:all": "npm run build && npm publish --workspaces",
+    "link:cli": "cd packages/cli && npm link",
+    "install:global": "./install.sh"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "eslint": "^8.0.0",
+    "prettier": "^3.0.0",
+    "typescript": "^5.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  }
+}

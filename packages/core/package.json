@@ -1,0 +1,24 @@
+{
+  "name": "@grok-cli/core",
+  "version": "0.1.0",
+  "description": "Core API client and server for grok-cli",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist",
+    "typecheck": "tsc --noEmit",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@grok-cli/shared": "file:../shared",
+    "axios": "^1.6.0",
+    "dotenv": "^16.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "jest": "^29.0.0",
+    "typescript": "^5.0.0"
+  }
+}
