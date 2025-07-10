@@ -19,7 +19,7 @@ By participating in this project, you agree to abide by our Code of Conduct. We 
 
 1. **Fork and clone the repository**:
    ```bash
-   git clone https://github.com/your-username/grok-cli.git
+   git clone https://github.com/0xgillus/grok-cli.git
    cd grok-cli
    ```
 
@@ -246,8 +246,8 @@ npm test -- --watch
 ### Resources
 
 - 📖 [Project Documentation](README.md)
-- 🐛 [Issue Tracker](https://github.com/your-org/grok-cli/issues)
-- 💬 [Discussions](https://github.com/your-org/grok-cli/discussions)
+- 🐛 [Issue Tracker](https://github.com/0xgillus/grok-cli/issues)
+- 💬 [Discussions](https://github.com/0xgillus/grok-cli/discussions)
 
 ### Communication
 
