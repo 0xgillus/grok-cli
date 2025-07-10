@@ -38,9 +38,13 @@ export class GrokAPIClient {
   }
 
   async chat(messages: Message[], options: ChatOptions = {}): Promise<GrokResponse> {
+    if (!options.model) {
+      throw new Error('Model must be specified. No default model available.');
+    }
+    
     try {
       const response: AxiosResponse<GrokResponse> = await this.client.post('/chat/completions', {
-        model: options.model || 'grok-beta',
+        model: options.model,
         messages,
         temperature: options.temperature,
         max_tokens: options.maxTokens,
@@ -54,9 +58,13 @@ export class GrokAPIClient {
   }
 
   async *stream(messages: Message[], options: ChatOptions = {}): AsyncGenerator<string> {
+    if (!options.model) {
+      throw new Error('Model must be specified. No default model available.');
+    }
+    
     try {
       const response = await this.client.post('/chat/completions', {
-        model: options.model || 'grok-beta',
+        model: options.model,
         messages,
         temperature: options.temperature,
         max_tokens: options.maxTokens,

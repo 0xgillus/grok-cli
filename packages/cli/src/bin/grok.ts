@@ -25,7 +25,7 @@ async function main() {
       .command('chat')
       .description('Start an interactive chat session or send a single message')
       .argument('[message]', 'Message to send (if not provided, starts interactive mode)')
-      .option('-m, --model <model>', 'Model to use', 'grok-beta')
+      .option('-m, --model <model>', 'Model to use (defaults to best available model)')
       .option('-t, --temperature <temp>', 'Temperature for response generation', parseFloat)
       .option('--max-tokens <tokens>', 'Maximum tokens for response', parseInt)
       .option('-s, --stream', 'Stream the response')

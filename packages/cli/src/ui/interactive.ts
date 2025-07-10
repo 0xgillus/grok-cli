@@ -11,9 +11,23 @@ export class InteractiveChat {
   private messages: Message[] = [];
   private configManager: ConfigManager;
   private config: any;
+  private userModels: any[] = [];
+  private currentModel: string = '';
+  private maxContextLength: number = 32768;
 
   constructor() {
     this.configManager = ConfigManager.getInstance();
+  }
+
+  // Rough token estimation (4 chars ≈ 1 token for English text)
+  private estimateTokens(text: string): number {
+    return Math.ceil(text.length / 4);
+  }
+
+  private calculateUsedTokens(): number {
+    return this.messages.reduce((total, message) => {
+      return total + this.estimateTokens(message.content);
+    }, 0);
   }
 
   async start(): Promise<void> {
@@ -41,13 +55,56 @@ export class InteractiveChat {
       apiKey: this.config.apiKey
     });
 
+    // Fetch user's models dynamically
+    try {
+      this.userModels = await this.client.models();
+      if (this.userModels.length > 0) {
+        // Prioritize models: grok-4 > grok-3 > grok-2 > others
+        let preferredModel = this.userModels[0].id; // Default to first available
+        
+        // Look for the best available model in order of preference
+        const modelPriority = ['grok-4-0709', 'grok-3', 'grok-3-fast', 'grok-2-1212', 'grok-2-vision-1212'];
+        for (const priorityModel of modelPriority) {
+          const foundModel = this.userModels.find(m => m.id === priorityModel);
+          if (foundModel) {
+            preferredModel = foundModel.id;
+            break;
+          }
+        }
+        
+        // If a configured model exists in the user's available models, use that instead
+        if (this.config.defaultModel) {
+          const configuredModel = this.userModels.find(m => m.id === this.config.defaultModel);
+          if (configuredModel) {
+            preferredModel = configuredModel.id;
+          }
+        }
+        
+        this.currentModel = preferredModel;
+        
+        // Get context length for the selected model
+        const selectedModel = this.userModels.find(m => m.id === this.currentModel);
+        this.maxContextLength = selectedModel?.contextLength || 32768;
+        
+        logger.info(`Using model: ${this.currentModel} (${this.userModels.length} available)`);
+        logger.info(`Context length: ${this.maxContextLength.toLocaleString()} tokens`);
+      } else {
+        logger.error('No models available in your account.');
+        return;
+      }
+    } catch (error) {
+      logger.warn('Could not fetch models from API. Using fallback.');
+      this.currentModel = 'grok-beta'; // Use a generic fallback
+    }
+
     // Start the chat loop
     await this.chatLoop();
   }
 
   private async chatLoop(): Promise<void> {
-    // Display context info
-    await displayContextInfo();
+    // Display context info with real model data
+    const usedTokens = this.calculateUsedTokens();
+    await displayContextInfo(this.currentModel, this.maxContextLength, usedTokens);
 
     console.log(chalk.green('Ready to chat! Type ') + chalk.cyan('/help') + chalk.green(' for commands or ') + chalk.cyan('/quit') + chalk.green(' to exit.'));
     console.log();
@@ -174,8 +231,10 @@ export class InteractiveChat {
     const spinner = ora(chalk.blue('Thinking...')).start();
 
     try {
-      // Call Grok API
-      const response = await this.client!.chat(this.messages);
+      // Call Grok API with dynamic model
+      const response = await this.client!.chat(this.messages, { 
+        model: this.currentModel 
+      });
       
       spinner.stop();
       
@@ -185,8 +244,43 @@ export class InteractiveChat {
       // Add assistant response to history
       this.messages.push({ role: 'assistant', content: assistantMessage });
       
-      // Display the response
-      console.log(chalk.green('Grok: ') + chalk.white(assistantMessage));
+      // Display the response with better formatting
+      console.log();
+      console.log(chalk.bold.green('Grok:'));
+      console.log();
+      
+      // Format the response with proper styling
+      const formattedResponse = this.formatResponse(assistantMessage);
+      console.log(formattedResponse);
+      
+      console.log();
+      
+      // Show updated context usage
+      const usedTokens = this.calculateUsedTokens();
+      const availableTokens = this.maxContextLength - usedTokens;
+      const percentageLeft = Math.max(0, (availableTokens / this.maxContextLength) * 100);
+      
+      let contextStatus;
+      let percentDisplay;
+      
+      // More accurate percentage display
+      if (percentageLeft >= 99.95) {
+        percentDisplay = '100%';
+      } else if (percentageLeft >= 99.5) {
+        percentDisplay = Math.round(percentageLeft * 10) / 10 + '%'; // Show one decimal
+      } else {
+        percentDisplay = Math.round(percentageLeft) + '%';
+      }
+      
+      if (percentageLeft > 75) {
+        contextStatus = chalk.green(`${availableTokens.toLocaleString()} tokens available (${percentDisplay})`);
+      } else if (percentageLeft > 25) {
+        contextStatus = chalk.yellow(`${availableTokens.toLocaleString()} tokens available (${percentDisplay})`);
+      } else {
+        contextStatus = chalk.red(`${availableTokens.toLocaleString()} tokens available (${percentDisplay})`);
+      }
+      
+      console.log(chalk.gray('Context: ') + contextStatus);
       console.log();
 
     } catch (error: any) {
@@ -203,5 +297,78 @@ export class InteractiveChat {
       
       console.log();
     }
+  }
+
+  private formatResponse(text: string): string {
+    // Split response into lines for better formatting
+    const lines = text.split('\n');
+    let formattedLines: string[] = [];
+    let inCodeBlock = false;
+    let codeLanguage = '';
+
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      
+      // Handle code blocks
+      if (line.startsWith('```')) {
+        if (!inCodeBlock) {
+          // Starting code block
+          inCodeBlock = true;
+          codeLanguage = line.substring(3).trim();
+          formattedLines.push(chalk.dim.gray('┌─ Code ') + chalk.cyan(codeLanguage || 'block') + chalk.dim.gray(' ─'.repeat(40 - (codeLanguage.length + 10))));
+        } else {
+          // Ending code block
+          inCodeBlock = false;
+          formattedLines.push(chalk.dim.gray('└' + '─'.repeat(47)));
+        }
+        continue;
+      }
+      
+      if (inCodeBlock) {
+        // Code content with syntax highlighting colors
+        formattedLines.push(chalk.dim.gray('│ ') + chalk.hex('#a8e6cf')(line));
+      } else {
+        // Regular text formatting
+        let formattedLine = line;
+        
+        // Style different text patterns
+        // Bold text (**text**)
+        formattedLine = formattedLine.replace(/\*\*(.*?)\*\*/g, (match, p1) => chalk.bold.white(p1));
+        
+        // Italic text (*text*)
+        formattedLine = formattedLine.replace(/\*(.*?)\*/g, (match, p1) => chalk.italic.gray(p1));
+        
+        // Inline code (`code`)
+        formattedLine = formattedLine.replace(/`([^`]+)`/g, (match, p1) => chalk.bgBlackBright.hex('#a8e6cf')(' ' + p1 + ' '));
+        
+        // Headers (# text)
+        if (line.startsWith('# ')) {
+          formattedLine = chalk.bold.hex('#4ECDC4')(line);
+        } else if (line.startsWith('## ')) {
+          formattedLine = chalk.bold.hex('#45B7D1')(line);
+        } else if (line.startsWith('### ')) {
+          formattedLine = chalk.bold.hex('#96CEB4')(line);
+        }
+        
+        // Bullet points
+        if (line.trim().startsWith('- ') || line.trim().startsWith('* ')) {
+          formattedLine = formattedLine.replace(/^(\s*)([-*])(\s)/, '$1' + chalk.cyan('•') + '$3');
+        }
+        
+        // Numbers in lists
+        if (/^\s*\d+\.\s/.test(line)) {
+          formattedLine = formattedLine.replace(/^(\s*)(\d+)(\.\s)/, '$1' + chalk.cyan('$2') + chalk.dim('$3'));
+        }
+        
+        // Apply base color to regular text
+        if (formattedLine === line && line.trim() !== '') {
+          formattedLine = chalk.hex('#E8F5E8')(line);
+        }
+        
+        formattedLines.push(formattedLine);
+      }
+    }
+    
+    return formattedLines.join('\n');
   }
 }

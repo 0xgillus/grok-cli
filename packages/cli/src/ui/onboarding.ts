@@ -64,14 +64,36 @@ async function promptForApiKey(): Promise<boolean> {
   try {
     const client = new GrokAPIClient({ apiKey: apiKey.trim() });
     
-    // Try to get models to validate the key
-    await client.models();
+    // Try to get models to validate the key and set up the config
+    const models = await client.models();
     
-    // If successful, save the key
+    // If successful, save the key and detect the best model
     const configManager = ConfigManager.getInstance();
-    await configManager.save({ apiKey: apiKey.trim() });
+    const config: any = { apiKey: apiKey.trim() };
     
-    console.log(chalk.green('API key validated and saved successfully!'));
+    // Set the default model to the best available model
+    if (models.length > 0) {
+      // Prioritize models: grok-4 > grok-3 > grok-2 > others
+      let bestModel = models[0].id; // Default to first available
+      const modelPriority = ['grok-4-0709', 'grok-3', 'grok-3-fast', 'grok-2-1212', 'grok-2-vision-1212'];
+      for (const priorityModel of modelPriority) {
+        const foundModel = models.find((m: any) => m.id === priorityModel);
+        if (foundModel) {
+          bestModel = foundModel.id;
+          break;
+        }
+      }
+      
+      config.defaultModel = bestModel;
+      console.log(chalk.green(`✓ API key validated successfully!`));
+      console.log(chalk.gray(`✓ Detected model: ${bestModel}`));
+      console.log(chalk.gray(`✓ Available models: ${models.length}`));
+    } else {
+      console.log(chalk.yellow('Warning: No models found in your account.'));
+    }
+    
+    await configManager.save(config);
+    console.log(chalk.green('✓ Configuration saved!'));
     console.log();
     
     await showWelcomeMessage();

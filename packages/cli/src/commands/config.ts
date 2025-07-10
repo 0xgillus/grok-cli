@@ -141,3 +141,57 @@ configCommand
       logger.error(`Failed to remove API key: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   });
+
+configCommand
+  .command('list-models')
+  .description('List available models from your xAI account')
+  .action(async () => {
+    const configManager = ConfigManager.getInstance();
+    await configManager.load();
+    const config = configManager.getAll();
+    
+    if (!config.apiKey) {
+      logger.error('API key not configured. Run "grok config set-key" to set it.');
+      return;
+    }
+
+    try {
+      const { GrokAPIClient } = await import('@grok-cli/core');
+      const client = new GrokAPIClient({ apiKey: config.apiKey });
+      
+      console.log('🔍 Fetching available models...\n');
+      const models = await client.models();
+      
+      if (models.length === 0) {
+        logger.warn('No models available in your account.');
+        return;
+      }
+      
+      console.log('📋 Available Models:');
+      console.log('─'.repeat(50));
+      
+      models.forEach((model: any) => {
+        const isDefault = model.id === config.defaultModel;
+        const indicator = isDefault ? '✓' : ' ';
+        const contextLength = model.contextLength ? ` (${model.contextLength.toLocaleString()} tokens)` : '';
+        
+        console.log(`${indicator} ${model.id}${contextLength}`);
+        if (model.description) {
+          console.log(`   ${model.description}`);
+        }
+      });
+      
+      console.log('─'.repeat(50));
+      console.log(`Total: ${models.length} models available`);
+      if (config.defaultModel) {
+        console.log(`Default: ${config.defaultModel} (marked with ✓)`);
+      }
+      console.log('\nTo set a default model: grok config set-model <model-name>');
+      
+    } catch (error: any) {
+      logger.error(`Failed to fetch models: ${error.message}`);
+      if (error.statusCode === 401) {
+        logger.error('Your API key may be invalid. Check your configuration.');
+      }
+    }
+  });
