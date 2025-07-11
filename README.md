@@ -1,4 +1,5 @@
 # Grok CLI
+![GvgwDzwWQAAJMTh](https://github.com/user-attachments/assets/cb2e8b00-3129-46c1-8161-887901906269)
 
 A powerful command-line interface for xAI's Grok models, providing developers with terminal access to Grok's capabilities for code analysis, generation, and workflow automation.
 
