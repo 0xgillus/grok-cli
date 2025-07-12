@@ -5,7 +5,7 @@ import { GrokAPIClient } from '@grok-cli/core';
 export function displayWelcomeBanner() {
   console.clear();
 
-  // Beautiful ASCII art for GROK CLI with gray colors and ASCII "x"
+  // Beautiful ASCII art for X GROK CLI with gray colors and ASCII "x"
   const banner = `
 ${chalk.gray(' ██╗  ██╗ ')}${chalk.gray('  ██████╗ ')}${chalk.gray(' ██████╗ ')}${chalk.gray(' ██████╗ ')}${chalk.gray(' ██╗  ██╗')}${chalk.dim.gray('     ██████╗')}${chalk.dim.gray(' ██╗     ')}${chalk.dim.gray(' ██╗')}
 ${chalk.gray(' ╚██╗██╔╝ ')}${chalk.gray(' ██╔════╝ ')}${chalk.gray(' ██╔══██╗')}${chalk.gray(' ██╔═══██╗')}${chalk.gray(' ██║ ██╔╝')}${chalk.dim.gray('    ██╔════╝')}${chalk.dim.gray(' ██║     ')}${chalk.dim.gray(' ██║')}

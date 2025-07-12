@@ -1,6 +1,6 @@
-# Grok CLI - In-Chat Project Creation Demo
+# X GROK CLI - In-Chat Project Creation Demo
 
-This document demonstrates the powerful in-chat project creation feature of Grok CLI.
+This document demonstrates the powerful in-chat project creation feature of X GROK CLI.
 
 ## How It Works
 
@@ -10,12 +10,12 @@ When you run `grok` and enter interactive chat mode, you can naturally request p
 
 ```bash
 $ grok
-  ██████╗  ██████╗  ██████╗  ██╗  ██╗     ██████╗ ██╗      ██╗
- ██╔════╝  ██╔══██╗ ██╔═══██╗ ██║ ██╔╝    ██╔════╝ ██║      ██║
- ██║  ███╗ ██████╔╝ ██║   ██║ █████╔╝     ██║      ██║      ██║
- ██║   ██║ ██╔══██╗ ██║   ██║ ██╔═██╗     ██║      ██║      ██║
- ╚██████╔╝ ██║  ██║ ╚██████╔╝ ██║  ██╗    ╚██████╗ ███████╗ ██║
-  ╚═════╝  ╚═╝  ╚═╝  ╚═════╝  ╚═╝  ╚═╝     ╚═════╝ ╚══════╝ ╚═╝
+ ██╗  ██╗   ██████╗  ██████╗  ██████╗  ██╗  ██╗     ██████╗ ██╗      ██╗
+ ╚██╗██╔╝  ██╔════╝  ██╔══██╗ ██╔═══██╗ ██║ ██╔╝    ██╔════╝ ██║      ██║
+  ╚███╔╝   ██║  ███╗ ██████╔╝ ██║   ██║ █████╔╝     ██║      ██║      ██║
+  ██╔██╗   ██║   ██║ ██╔══██╗ ██║   ██║ ██╔═██╗     ██║      ██║      ██║
+ ██╔╝ ██╗  ╚██████╔╝ ██║  ██║ ╚██████╔╝ ██║  ██╗    ╚██████╗ ███████╗ ██║
+ ╚═╝  ╚═╝   ╚═════╝  ╚═╝  ╚═╝  ╚═════╝  ╚═╝  ╚═╝     ╚═════╝ ╚══════╝ ╚═╝
 
                       Command-line interface for xAI's Grok models
 
@@ -71,7 +71,7 @@ Your project is ready! Continue chatting or type /quit to exit.
 Grok: Great question! For adding authentication to your React Todo app, here are several approaches...
 
 > /quit
-Thanks for using Grok CLI! Goodbye!
+Thanks for using X GROK CLI! Goodbye!
 ```
 
 ## Natural Language Examples
