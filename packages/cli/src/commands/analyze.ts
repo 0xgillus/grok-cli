@@ -7,12 +7,17 @@ interface AnalyzeOptions {
   extensions?: string;
 }
 
-export async function analyzeCommand(path: string, options: AnalyzeOptions = {}) {
+export async function analyzeCommand(
+  path: string,
+  options: AnalyzeOptions = {}
+) {
   const configManager = ConfigManager.getInstance();
   const config = configManager.getAll();
 
   if (!config.apiKey) {
-    logger.error('API key not configured. Run "grok config set-key" to set it.');
+    logger.error(
+      'API key not configured. Run "grok config set-key" to set it.'
+    );
     return;
   }
 
@@ -20,10 +25,12 @@ export async function analyzeCommand(path: string, options: AnalyzeOptions = {})
 
   try {
     const processor = new FileProcessor();
-    const extensions = options.extensions ? options.extensions.split(',').map(ext => ext.trim()) : undefined;
-    
+    const extensions = options.extensions
+      ? options.extensions.split(',').map(ext => ext.trim())
+      : undefined;
+
     const files = await processor.getRelevantFiles(path, extensions);
-    
+
     if (files.length === 0) {
       spinner.stop();
       logger.warn('No relevant files found.');
@@ -33,7 +40,7 @@ export async function analyzeCommand(path: string, options: AnalyzeOptions = {})
     spinner.text = `Found ${files.length} files. Preparing analysis...`;
 
     const contextManager = new ContextManager();
-    
+
     // Add files to context
     for (const file of files) {
       contextManager.addFile(file.path, file.content);
@@ -70,20 +77,23 @@ Focus on providing actionable insights.`;
     console.log('CODEBASE ANALYSIS REPORT');
     console.log('='.repeat(60));
     console.log(`Path: ${path}`);
-    console.log(`📄 Files analyzed: ${files.length}`);
-    console.log(`🔤 Total tokens: ${contextManager.getTokenCount()}`);
+    console.log(`Files analyzed: ${files.length}`);
+    console.log(`Total tokens: ${contextManager.getTokenCount()}`);
     console.log('='.repeat(60));
     console.log();
     console.log(response.choices[0].message.content);
     console.log();
     console.log('='.repeat(60));
-    
-    if (response.usage) {
-      logger.info(`Analysis complete. Tokens used: ${response.usage.totalTokens}`);
-    }
 
+    if (response.usage) {
+      logger.info(
+        `Analysis complete. Tokens used: ${response.usage.totalTokens}`
+      );
+    }
   } catch (error) {
     spinner.stop();
-    logger.error(`Analysis failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    logger.error(
+      `Analysis failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+    );
   }
 }

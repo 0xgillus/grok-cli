@@ -24,12 +24,12 @@ Context length: 131,072 tokens
 
 Ready to chat! Type /help for commands or /quit to exit.
 
-❯ Create a React todo app with TypeScript
+> Create a React todo app with TypeScript
 
-🎯 Smart project creation detected!
+Smart project creation detected!
 Analyzing your request with AI...
 
-✅ Project details extracted:
+Project details extracted:
    Name: todo-app
    Type: web-app
    Framework: react
@@ -38,11 +38,11 @@ Analyzing your request with AI...
 
 ? Create this project? Yes
 
-🚀 Creating your project...
-🔄 Generating project structure with AI...
+Creating your project...
+Generating project structure with AI...
 
-📁 Creating directory: todo-app
-📝 Generated 15 files:
+Creating directory: todo-app
+Generated 15 files:
    ├── package.json
    ├── tsconfig.json
    ├── src/
@@ -57,20 +57,20 @@ Analyzing your request with AI...
    │   └── index.html
    └── README.md
 
-✅ Project created successfully!
+Project created successfully!
 
 Next steps:
   cd todo-app
   npm install
   npm start
 
-🎉 Your project is ready! Continue chatting or type /quit to exit.
+Your project is ready! Continue chatting or type /quit to exit.
 
-❯ How do I add authentication to this app?
+> How do I add authentication to this app?
 
 Grok: Great question! For adding authentication to your React Todo app, here are several approaches...
 
-❯ /quit
+> /quit
 Thanks for using Grok CLI! Goodbye!
 ```
 
@@ -116,22 +116,22 @@ The CLI understands many different ways to express project creation intent:
 
 ## Smart Features
 
-### 🤖 AI-Powered Parsing
+### AI-Powered Parsing
 - Uses Grok AI to understand natural language requests
 - Extracts project name, type, framework, and language automatically
 - Provides intelligent defaults based on modern best practices
 
-### 📋 Confirmation Flow
+### Confirmation Flow
 - Shows extracted project details before creation
 - Allows you to confirm or cancel the project
 - Clear feedback at each step
 
-### 🏗️ Complete Project Generation
+### Complete Project Generation
 - Creates full project structure with multiple files
 - Includes package.json, configuration files, and starter code
 - Follows industry best practices and conventions
 
-### 🔄 Seamless Integration
+### Seamless Integration
 - Works within regular chat conversations
 - No need to exit chat mode or run separate commands
 - Continue chatting about the project after creation
@@ -139,33 +139,33 @@ The CLI understands many different ways to express project creation intent:
 ## Tips for Best Results
 
 1. **Be Specific**: Include the technology stack you prefer
-   - ✅ "Create a React todo app with TypeScript"
-   - ❌ "Make an app"
+   - Good: "Create a React todo app with TypeScript"
+   - Bad: "Make an app"
 
 2. **Describe the Purpose**: Mention what the project should do
-   - ✅ "Build me a Python CLI tool for file management"
-   - ❌ "Create a Python thing"
+   - Good: "Build me a Python CLI tool for file management"
+   - Bad: "Create a Python thing"
 
 3. **Include Framework Preferences**: Specify if you have a preference
-   - ✅ "Make an Express API with MongoDB"
-   - ✅ "Create a Vue.js app with Tailwind CSS"
+   - Good: "Make an Express API with MongoDB"
+   - Good: "Create a Vue.js app with Tailwind CSS"
 
 4. **Use Natural Language**: No need for rigid syntax
-   - ✅ "I want to build a blog website with Next.js"
-   - ✅ "Can you help me create a Discord bot?"
-   - ✅ "Please generate a React dashboard for analytics"
+   - Good: "I want to build a blog website with Next.js"
+   - Good: "Can you help me create a Discord bot?"
+   - Good: "Please generate a React dashboard for analytics"
 
 ## Advanced Usage
 
 You can also combine project creation with immediate questions:
 
 ```
-❯ Create a FastAPI backend for a todo app, and then explain how to add database models
+> Create a FastAPI backend for a todo app, and then explain how to add database models
 
-🎯 Smart project creation detected!
+Smart project creation detected!
 [... project creation flow ...]
 
-✅ Project created successfully!
+Project created successfully!
 
 Now, to add database models to your FastAPI todo app, you'll want to...
 ```

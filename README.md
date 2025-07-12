@@ -48,8 +48,8 @@ grok
 On first run, you'll see a welcome screen that guides you through:
 1. **API Key Setup** - Enter your xAI API key
 2. **Configuration** - Set your preferred defaults
-3. **🔑 API key setup** with validation
-4. **✅ Ready to chat** confirmation
+3. **API key setup** with validation
+4. **Ready to chat** confirmation
 
 ### First Time Experience
 
@@ -69,11 +69,11 @@ Tips for getting started:
 3. Create GROK.md files to customize your interactions with Grok.
 4. /help for more information.
 
-⚠️  First time setup required
+First time setup required
 ──────────────────────────────────────────────────
 To get started with Grok CLI, you need to configure your xAI API key.
 
-📝 How to get your API key:
+How to get your API key:
    1. Visit https://console.x.ai/
    2. Sign in to your xAI account
    3. Navigate to API Keys section
@@ -181,10 +181,10 @@ You: What is the difference between TypeScript and JavaScript?
 Grok: TypeScript is a superset of JavaScript that adds static type checking...
 
 You: Create a React todo app
-🎯 Project creation detected!
+Project creation detected!
 ? Create a web-app project called "todo-app"? Yes
-🚀 Generating project structure...
-✅ Project created successfully!
+Generating project structure...
+Project created successfully!
 
 You: exit
 Goodbye!
@@ -198,13 +198,13 @@ $ grok create
 ? Project type: Web Application
 ? Framework: React
 ? Language: TypeScript
-🚀 Generating project structure...
-✅ Project created successfully!
+Generating project structure...
+Project created successfully!
 
 # Quick creation with parameters
 $ grok create my-api --type api --framework express --language typescript
-🚀 Generating project structure...
-✅ Project created successfully!
+Generating project structure...
+Project created successfully!
 ```
 
 ### In-Chat Project Creation Examples
@@ -218,11 +218,11 @@ While in interactive chat mode, you can naturally ask for projects:
 ### Code Analysis
 ```bash
 $ grok analyze ./packages/core
-🔍 CODEBASE ANALYSIS REPORT
+CODEBASE ANALYSIS REPORT
 ============================================================
-📁 Path: ./packages/core
-📄 Files analyzed: 12
-🔤 Total tokens: 2,450
+Path: ./packages/core
+Files analyzed: 12
+Total tokens: 2,450
 ============================================================
 
 ## Architecture & Structure
@@ -324,5 +324,5 @@ See [CHANGELOG.md](CHANGELOG.md) for version history.
 ## Support
 
 - 📖 [Documentation](https://github.com/0xgillus/grok-cli/docs)
-- 🐛 [Issue Tracker](https://github.com/0xgillus/grok-cli/issues)
-- 💬 [Discussions](https://github.com/0xgillus/grok-cli/discussions)
+- [Issue Tracker](https://github.com/0xgillus/grok-cli/issues)
+- [Discussions](https://github.com/0xgillus/grok-cli/discussions)

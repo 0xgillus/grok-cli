@@ -1,7 +1,8 @@
 import { Message, GrokResponse, GrokModel } from '@grok-cli/shared';
 
 export class MockGrokClient {
-  private delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+  private delay = (ms: number) =>
+    new Promise(resolve => setTimeout(resolve, ms));
 
   async chat(messages: Message[]): Promise<GrokResponse> {
     // Simulate API delay
@@ -12,24 +13,28 @@ export class MockGrokClient {
 
     return {
       id: 'mock_' + Date.now(),
-      choices: [{
-        message: {
-          role: 'assistant',
-          content: response
+      choices: [
+        {
+          message: {
+            role: 'assistant',
+            content: response,
+          },
+          finishReason: 'stop',
         },
-        finishReason: 'stop'
-      }],
+      ],
       usage: {
         promptTokens: Math.floor(lastMessage.content.length / 4),
         completionTokens: Math.floor(response.length / 4),
-        totalTokens: Math.floor((lastMessage.content.length + response.length) / 4)
-      }
+        totalTokens: Math.floor(
+          (lastMessage.content.length + response.length) / 4
+        ),
+      },
     };
   }
 
   async *stream(messages: Message[]): AsyncGenerator<string> {
     await this.delay(500);
-    
+
     const lastMessage = messages[messages.length - 1];
     const response = this.generateMockResponse(lastMessage.content);
     const words = response.split(' ');
@@ -42,26 +47,26 @@ export class MockGrokClient {
 
   async models(): Promise<GrokModel[]> {
     await this.delay(500);
-    
+
     return [
       {
         id: 'grok-beta',
         name: 'Grok Beta',
         description: 'Latest Grok model (Mock)',
-        contextLength: 32768
+        contextLength: 32768,
       },
       {
         id: 'grok-2',
         name: 'Grok 2',
         description: 'Advanced Grok model (Mock)',
-        contextLength: 65536
+        contextLength: 65536,
       },
       {
         id: 'grok-1',
         name: 'Grok 1',
         description: 'Original Grok model (Mock)',
-        contextLength: 16384
-      }
+        contextLength: 16384,
+      },
     ];
   }
 
@@ -69,14 +74,17 @@ export class MockGrokClient {
     const lowerInput = input.toLowerCase();
 
     // Programming related responses
-    if (lowerInput.includes('typescript') || lowerInput.includes('javascript')) {
+    if (
+      lowerInput.includes('typescript') ||
+      lowerInput.includes('javascript')
+    ) {
       return `TypeScript is a powerful superset of JavaScript that adds static type checking. Here's what makes it great:
 
 **Key Benefits:**
-- 🔒 **Type Safety**: Catch errors at compile-time
-- 🚀 **Better IDE Support**: Excellent autocomplete and refactoring
-- 📚 **Self-Documenting**: Types serve as inline documentation
-- 🛠️ **Tooling**: Amazing development experience
+- **Type Safety**: Catch errors at compile-time
+- **Better IDE Support**: Excellent autocomplete and refactoring
+- **Self-Documenting**: Types serve as inline documentation
+- **Tooling**: Amazing development experience
 
 **Example:**
 \`\`\`typescript
@@ -131,14 +139,14 @@ This component demonstrates modern React patterns with TypeScript!`;
     if (lowerInput.includes('code') || lowerInput.includes('analyze')) {
       return `I can help you analyze code! Here's what I can do:
 
-🔍 **Code Analysis Capabilities:**
+**Code Analysis Capabilities:**
 - Architecture review and suggestions
 - Code quality assessment
 - Performance optimization tips
 - Security vulnerability detection
 - Best practices recommendations
 
-📁 **Supported Languages:**
+**Supported Languages:**
 - JavaScript/TypeScript
 - Python
 - Java
@@ -146,7 +154,7 @@ This component demonstrates modern React patterns with TypeScript!`;
 - Rust
 - And many more!
 
-💡 **Tips for better analysis:**
+**Tips for better analysis:**
 - Include specific files with @path/to/file
 - Ask about specific patterns or issues
 - Request optimization suggestions
@@ -154,14 +162,18 @@ This component demonstrates modern React patterns with TypeScript!`;
 Try asking: "Analyze this function for performance issues" or "Review this code for best practices"`;
     }
 
-    if (lowerInput.includes('hello') || lowerInput.includes('hi') || lowerInput.includes('hey')) {
-      return `Hello! 👋 Welcome to Grok CLI!
+    if (
+      lowerInput.includes('hello') ||
+      lowerInput.includes('hi') ||
+      lowerInput.includes('hey')
+    ) {
+      return `Hello! Welcome to Grok CLI!
 
 I'm here to help you with:
-- 💻 **Code Analysis**: Review and improve your codebase
-- 🚀 **Programming Help**: Explain concepts and write code
-- 🛠️ **Development**: Best practices and architecture advice
-- 🐛 **Debugging**: Help solve coding problems
+- **Code Analysis**: Review and improve your codebase
+- **Programming Help**: Explain concepts and write code
+- **Development**: Best practices and architecture advice
+- **Debugging**: Help solve coding problems
 
 **Quick Tips:**
 - Ask specific questions for better results
@@ -175,13 +187,13 @@ What would you like to work on today?`;
     if (lowerInput.includes('help')) {
       return `Here's how to get the most out of Grok CLI:
 
-🎯 **Best Practices:**
+**Best Practices:**
 - Be specific in your questions
 - Provide context about your project
 - Include relevant code snippets
 - Mention your tech stack
 
-💬 **Example Questions:**
+**Example Questions:**
 - "Explain this TypeScript error: [error message]"
 - "How can I optimize this React component?"
 - "Review this API design for best practices"
@@ -202,10 +214,10 @@ Ready to code? Ask me anything!`;
 I'm a mock version of Grok running in demo mode. In the real version, I would provide intelligent responses powered by xAI's Grok models.
 
 **What I can help you with in demo mode:**
-- 🎨 Show you the beautiful CLI interface
-- 💬 Demonstrate interactive chat features
-- 🔧 Test configuration and commands
-- 📱 Experience the user interface
+- Show you the beautiful CLI interface
+- Demonstrate interactive chat features
+- Test configuration and commands
+- Experience the user interface
 
 **To use the real Grok:**
 1. Get an xAI API key from https://console.x.ai/

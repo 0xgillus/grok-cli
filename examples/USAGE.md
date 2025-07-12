@@ -123,7 +123,7 @@ chmod +x project-grok.sh
 #!/bin/bash
 # .git/hooks/pre-commit
 if git diff --cached --name-only | grep -E '\.(js|ts|py)$' > /dev/null; then
-  echo "🔍 Running Grok code analysis..."
+  echo "Running Grok code analysis..."
   grok analyze --extensions js,ts,py . | head -20
 fi
 ```

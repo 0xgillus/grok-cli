@@ -246,8 +246,8 @@ npm test -- --watch
 ### Resources
 
 - 📖 [Project Documentation](README.md)
-- 🐛 [Issue Tracker](https://github.com/0xgillus/grok-cli/issues)
-- 💬 [Discussions](https://github.com/0xgillus/grok-cli/discussions)
+- [Issue Tracker](https://github.com/0xgillus/grok-cli/issues)
+- [Discussions](https://github.com/0xgillus/grok-cli/discussions)
 
 ### Communication
 
@@ -282,4 +282,4 @@ Contributors will be:
 - Mentioned in release notes
 - Added to a contributors file (if created)
 
-Thank you for contributing to Grok CLI! 🚀
+Thank you for contributing to Grok CLI!
